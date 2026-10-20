@@ -1,0 +1,61 @@
+export const tempMails = [
+    "alex01@temp-mail.org",
+    "jordan02@tempmail.plus",
+    "taylor03@tempmailo.com",
+    "morgan04@emailondeck.com",
+    "casey05@getnada.com",
+    "jamie06@inboxkitten.com",
+    "riley07@mohmal.com",
+    "drew08@emailfake.com",
+    "blake09@dispostable.com",
+    "avery10@mintemail.com",
+    "sam11@mailnesia.com",
+    "chris12@tempr.email",
+    "jessie13@discard.email",
+    "robin14@mailcatch.com",
+    "devon15@trashmail.com",
+    "skyler16@mytemp.email",
+    "parker17@burnermail.io",
+    "quinn18@mailpoof.com",
+    "reese19@tempinbox.com",
+    "cameron20@fakemail.net",
+    "logan21@throwawaymail.com",
+    "harper22@mailinator.com",
+    "emery23@33mail.com",
+    "finley24@simplelogin.com",
+    "dakota25@addy.io",
+    "rowan26@duck.com",
+    "kai27@mozmail.com",
+    "noah28@proton.me",
+    "oliver29@tuta.com",
+    "liam30@fastmail.com",
+    "mia31@mail.com",
+    "emma32@gmx.com",
+    "lucas33@outlook.com",
+    "amelia34@hotmail.com",
+    "ethan35@live.com",
+    "sophia36@icloud.com",
+    "mason37@yandex.com",
+    "isabella38@zoho.com",
+    "elijah39@hey.com",
+    "charlie40@gmail.com",
+    "test41@example.com",
+    "test42@example.net",
+    "test43@example.org",
+    "max44@sharklasers.com",
+    "ben45@guerrillamailblock.com",
+    "leo46@grr.la",
+    "aria47@spamgourmet.com",
+    "eva48@mailnull.com",
+    "jack49@jetable.org",
+    "zoe50@tempmailaddress.com",
+];
+// check for tempoary email
+export const sanitizeEmail = () => {
+    return tempMails.map((email) => {
+        const splitEmail = email.split("@");
+        const getSuffix = splitEmail[1];
+
+        return getSuffix;
+    });
+};
