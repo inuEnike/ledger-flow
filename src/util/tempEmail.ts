@@ -38,7 +38,6 @@ export const tempMails = [
     "mason37@yandex.com",
     "isabella38@zoho.com",
     "elijah39@hey.com",
-    "charlie40@gmail.com",
     "test41@example.com",
     "test42@example.net",
     "test43@example.org",
@@ -51,11 +50,8 @@ export const tempMails = [
     "zoe50@tempmailaddress.com",
 ];
 // check for tempoary email
-export const sanitizeEmail = () => {
-    return tempMails.map((email) => {
-        const splitEmail = email.split("@");
-        const getSuffix = splitEmail[1];
-
-        return getSuffix;
-    });
+export const getBlockedEmailDomains = (): string[] => {
+    return tempMails.map(
+        (email) => email.split("@")[1]?.toLowerCase() ?? ""
+    );
 };

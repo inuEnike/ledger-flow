@@ -1,6 +1,6 @@
 import * as z from "zod"
 
-const AuthSignupSchema = z.object({
+export const AuthSignupSchema = z.object({
     email: z.email(),
     password: z.string().min(8),
     first_name: z.string().min(2),
@@ -9,7 +9,7 @@ const AuthSignupSchema = z.object({
 
 export type authSignupDTO = z.infer<typeof AuthSignupSchema>
 
-const AuthSigninSchema = z.object({
+export const AuthSigninSchema = z.object({
     email: z.email(),
     password: z.string().min(8),
 })

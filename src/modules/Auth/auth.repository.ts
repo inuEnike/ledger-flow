@@ -1,6 +1,6 @@
 import type { Sql } from "postgres";
-import { USER_STATUS, type IAuthRepository, type IUser, type PublicUser } from "./auth.types";
-import type { authSignupDTO } from "./auth.schema";
+import { USER_STATUS, type IAuthRepository, type IUser, type PublicUser } from "./auth.types.ts";
+import type { authSignupDTO } from "./auth.schema.ts";
 
 
 export class AuthRepository implements IAuthRepository {
@@ -10,30 +10,40 @@ export class AuthRepository implements IAuthRepository {
     }
 
     findByEmail = async (email: string): Promise<Omit<IUser, "password_hash"> | null> => {
-        const [user] = await this.sql<PublicUser[]>`
-            SELECT id, email, first_name, last_name, status 
-                FROM auth.users 
-                    WHERE email=${email}
-                        LIMIT 1
-        `
-        return user ?? null
+        try {
+            const [user] = await this.sql<IUser[]>`
+                SELECT *
+                    FROM auth.users 
+                        WHERE email=${email}
+                            LIMIT 1
+            `
+            return user ?? null
+        } catch (error) {
+            throw new Error(error instanceof Error ? error.message : "An error occurred")
+        }
     }
 
-    createUser = async (data: authSignupDTO): Promise<IUser | null> => {
+  createUser = async (data: authSignupDTO): Promise<IUser | null> => {
+
+    try {
         const [user] = await this.sql<IUser[]>`
             INSERT INTO auth.users
                 (email, password_hash, first_name, last_name)
-                    VALUES
-                        (
-                            ${data.email},
-                            ${data.password},
-                            ${data.first_name},
-                            ${data.last_name}
-                        )
-            RETURNING *
-        `
-        return user ?? null
+            VALUES (
+                ${data.email},
+                ${data.password},
+                ${data.first_name},
+                ${data.last_name}
+            )
+            RETURNING id, email, first_name, last_name, status
+        `;
+
+
+        return user ?? null;
+    } catch (error) {
+        throw error;
     }
+};
     updateUserStatusActive = async (email: string): Promise<IUser | null> => {
         const [user] = await this.sql<IUser[]>`
             UPDATE auth.users

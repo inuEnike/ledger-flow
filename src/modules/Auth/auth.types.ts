@@ -1,8 +1,9 @@
-import type { authSignupDTO } from "./auth.schema"
-export enum USER_STATUS {
-    active = "active",
-    suspended = "suspended"
-}
+import type { NextFunction, Request, Response } from "express"
+import type { authSigninDTO, authSignupDTO } from "./auth.schema"
+export const USER_STATUS = {
+    active: "active",
+    suspended: "suspended"
+} as const
 
 export interface IUser {
     id: string,
@@ -10,8 +11,8 @@ export interface IUser {
     password_hash: string
     first_name: string
     last_name: string
-    status: string
-    email_verified_at: USER_STATUS
+    status: typeof USER_STATUS
+    email_verified_at: string | null
     created_at: string
     updated_at: string
 }
@@ -24,6 +25,8 @@ export interface IAuthRepository {
     updateUserStatusSuspended: (email: string) => Promise<IUser | null>
     getUserById: (id: string) => Promise<PublicUser | null>
 }
-export interface IAuthController {
-    signup: (data: authSignupDTO) => Promise<{ data: "Signed up successful" }>
+export interface IAuthService {
+    signup: (data: authSignupDTO) => Promise<{ message: "Signed up successful" }>
+    signin: (data: authSigninDTO) => Promise<PublicUser | null>
 }
+
