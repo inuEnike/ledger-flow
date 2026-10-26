@@ -220,6 +220,73 @@ export class AuthService implements IAuthService {
             refreshToken: newRefreshToken,
         };
     };
+    logout = async (refreshToken: string) => {
+        if (!ENV.REFRESH_TOKEN_SECRET) {
+            throw new NOT_FOUND_EXCEPTION("Invalid or not found refresh token")
+        }
+        let payload: jwt.JwtPayload;
 
+        try {
+            const verified = jwt.verify(refreshToken, ENV.REFRESH_TOKEN_SECRET, {
+                issuer: "ledgerflow-auth",
+            })
+
+            if (typeof verified === "string") {
+                throw new Error("Invalid token payload");
+            }
+
+            payload = verified;
+
+            if (
+                typeof payload.sub !== "string" ||
+                typeof payload.sid !== "string" ||
+                payload.type !== "refresh"
+            ) {
+                throw new UNAUTHORIZED_EXCEPTION(
+                    "Invalid refresh token payload"
+                );
+            }
+
+            const session =
+                await this.tokenRepository.findSessionById(payload.sid);
+
+            if (!session || session.user_id !== payload.sub) {
+                throw new UNAUTHORIZED_EXCEPTION(
+                    "Invalid refresh session"
+                );
+            }
+            if (
+                session.revoked_at !== null ||
+                new Date(session.expires_at).getTime() <= Date.now()
+            ) {
+                throw new UNAUTHORIZED_EXCEPTION(
+                    "Session is already revoked or expired"
+                );
+            }
+
+            const isTokenValid = await argon.verify(
+                session.token_hash,
+                refreshToken
+            );
+
+
+            if (!isTokenValid) {
+                throw new UNAUTHORIZED_EXCEPTION(
+                    "Invalid refresh token"
+                );
+            }
+            await this.tokenRepository.revokeSession(session.id);
+
+            return { message: "Logged out successfully" };
+        } catch (error) {
+            throw new UNAUTHORIZED_EXCEPTION(
+                error as string
+            );
+        }
+
+
+
+
+    }
 }
 

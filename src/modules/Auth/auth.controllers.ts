@@ -76,12 +76,12 @@ export class AuthController {
 
     refresh = async (req: Request, res: Response, next: NextFunction) => {
         const token = req?.cookies?.refresh_token
-        
+
         if (!token) {
             throw new NOT_FOUND_EXCEPTION("Refresh token not found, it is reqired!")
         }
         const { accessToken, refreshToken } = await this.authService.refresh(token)
-        
+
 
         res.cookie("refresh_token", refreshToken, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -100,4 +100,29 @@ export class AuthController {
             },
         });
     }
+
+    logout = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const refreshToken = req.cookies?.refresh_token;
+
+            if (refreshToken) {
+                await this.authService.logout(refreshToken);
+            }
+
+            res.clearCookie("refresh_token", {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/api/v1/auth",
+            });
+
+            return ApiResponse({
+                res,
+                status: 200,
+                message: "Logged out successfully",
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
 }
