@@ -2,10 +2,12 @@ import express, { type Express, type Request, type Response } from "express";
 import { ApiResponse } from "./util/apiResponse.ts";
 import { ErrorMiddleware } from "./middleware/error.middleware.ts";
 import AuthRouter from "./modules/Auth/auth.routes.ts"
+import cookieParser from "cookie-parser"
 
 export const app: Express = express()
 
 app.use(express.json())
+app.use(cookieParser())
 const prefix = "/api/v1"
 
 app.use(`${prefix}/auth`, AuthRouter)

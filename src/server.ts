@@ -2,6 +2,7 @@
 import { app } from "./app.ts";
 import { checkConnection, sql } from "./database/db.ts";
 import { ENV } from "./util/dotenv.ts";
+import { generateToken } from "./util/generateToken.ts";
 
 const startServer = () => {
     const PORT = ENV.PORT;
@@ -13,7 +14,6 @@ const startServer = () => {
             return;
         }
         await checkConnection()
-
         console.log(`Server connected on port ${PORT}`);
     });
 
