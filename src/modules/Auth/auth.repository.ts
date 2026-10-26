@@ -9,7 +9,7 @@ export class AuthRepository implements IAuthRepository {
         this.sql = sql
     }
 
-    findByEmail = async (email: string): Promise<Omit<IUser, "password_hash"> | null> => {
+    findByEmail = async (email: string): Promise<IUser | null> => {
         try {
             const [user] = await this.sql<IUser[]>`
                 SELECT *
@@ -23,10 +23,10 @@ export class AuthRepository implements IAuthRepository {
         }
     }
 
-  createUser = async (data: authSignupDTO): Promise<IUser | null> => {
+    createUser = async (data: authSignupDTO): Promise<IUser | null> => {
 
-    try {
-        const [user] = await this.sql<IUser[]>`
+        try {
+            const [user] = await this.sql<IUser[]>`
             INSERT INTO auth.users
                 (email, password_hash, first_name, last_name)
             VALUES (
@@ -39,11 +39,11 @@ export class AuthRepository implements IAuthRepository {
         `;
 
 
-        return user ?? null;
-    } catch (error) {
-        throw error;
-    }
-};
+            return user ?? null;
+        } catch (error) {
+            throw error;
+        }
+    };
     updateUserStatusActive = async (email: string): Promise<IUser | null> => {
         const [user] = await this.sql<IUser[]>`
             UPDATE auth.users
