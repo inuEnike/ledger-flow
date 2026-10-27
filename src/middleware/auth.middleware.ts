@@ -32,7 +32,7 @@ export const AuthMiddleware = (req: Request, _res: Response, next: NextFunction)
             throw new UNAUTHORIZED_EXCEPTION("Invalid token provided, Unauthorized!!")
         }
 
-        console.log(payload);
+ 
 
         req.user = payload.sub
         next()
