@@ -75,30 +75,34 @@ export class AuthController {
     }
 
     refresh = async (req: Request, res: Response, next: NextFunction) => {
-        const token = req?.cookies?.refresh_token
+        try {
+            const token = req?.cookies?.refresh_token
 
-        if (!token) {
-            throw new NOT_FOUND_EXCEPTION("Refresh token not found, it is reqired!")
+            if (!token) {
+                throw new NOT_FOUND_EXCEPTION("Refresh token not found, it is reqired!")
+            }
+            const { accessToken, refreshToken } = await this.authService.refresh(token)
+
+
+            res.cookie("refresh_token", refreshToken, {
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                secure: true,
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/api/v1/auth",
+            })
+
+            return ApiResponse({
+                res,
+                status: 200,
+                message: "Token refreshed successfully",
+                data: {
+                    accessToken,
+                },
+            });
+        } catch (error) {
+            next(error)
         }
-        const { accessToken, refreshToken } = await this.authService.refresh(token)
-
-
-        res.cookie("refresh_token", refreshToken, {
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            secure: true,
-            httpOnly: true,
-            sameSite: "lax",
-            path: "/api/v1/auth",
-        })
-
-        return ApiResponse({
-            res,
-            status: 200,
-            message: "Token refreshed successfully",
-            data: {
-                accessToken,
-            },
-        });
     }
 
     logout = async (req: Request, res: Response, next: NextFunction) => {

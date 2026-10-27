@@ -36,13 +36,16 @@ export interface IAccount {
     created_at: string
     updated_at: string
 }
-export type pickedAccountDetails = Partial<Omit<IAccount, 'created_at' | 'updated_at' | 'id'>>
+export type CreateAccountData = Pick<
+    IAccount,
+    "account_type" | "user_id" | "account_number" | "currency"
+>;
 export interface IAccountRepository {
     getAllAccounts: () => Promise<IAccount[]>
     getAccountDetailsByUserId: (userId: string) => Promise<IAccount[]>
-    createAnAccount: (data: pickedAccountDetails) => Promise<IAccount[]>
+    createAnAccount: (data: CreateAccountData) => Promise<IAccount[]>
 }
 
-export interface IAccountService{
-    
+export interface IAccountService {
+    getAllAccounts: () => Promise<IAccount[]>
 }
