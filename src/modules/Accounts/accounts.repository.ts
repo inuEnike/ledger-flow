@@ -1,6 +1,6 @@
-import { PostgresError, type Sql } from "postgres";
-import type { IAccount, IAccountRepository, pickedAccountDetails } from "./accounts.types";
-import type { accountDTO } from "./accounts.schema";
+import { type Sql } from "postgres";
+import type { CreateAccountData, IAccount, IAccountRepository } from "./accounts.types";
+
 
 export class AccountRepository implements IAccountRepository {
     private readonly sql: Sql
@@ -16,9 +16,7 @@ export class AccountRepository implements IAccountRepository {
             `
             return accounts
         } catch (error) {
-            if (error instanceof PostgresError) {
-                throw new Error(error.message)
-            }
+
             throw new Error
         }
     }
@@ -37,14 +35,12 @@ export class AccountRepository implements IAccountRepository {
             `;
             return account
         } catch (error) {
-            if (error instanceof PostgresError) {
-                throw new Error(error.message)
-            }
+
             throw Error
         }
     }
 
-    createAnAccount = async (data: pickedAccountDetails): Promise<IAccount[]> => {
+    createAnAccount = async (data: CreateAccountData): Promise<IAccount[]> => {
         try {
             const query = await this.sql<IAccount[]>`
             INSERT INTO 
@@ -52,10 +48,10 @@ export class AccountRepository implements IAccountRepository {
                     (account_type, user_id, account_number, currency)
                         VALUES
                             (
-                                ${data.account_type!},
-                                ${data.user_id!},
-                                ${data.account_number!},
-                                ${data.currency!},
+                                ${data.account_type},
+                                ${data.user_id},
+                                ${data.account_number},
+                                ${data.currency},
                             )
             RETURNING *
 
@@ -63,9 +59,7 @@ export class AccountRepository implements IAccountRepository {
 
             return query
         } catch (error) {
-            if (error instanceof PostgresError) {
-                throw new Error(error.message)
-            }
+
             throw Error
         }
 
