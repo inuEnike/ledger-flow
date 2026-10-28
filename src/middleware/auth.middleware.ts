@@ -58,9 +58,10 @@ export const adminMiddleware = async (req: Request, _res: Response, next: NextFu
     try {
         const userId = req.user
         const [user] = await sql`
-        SELECT * FROM 
-            auth.users
-                WHERE id=${userId} 
+        SELECT role 
+            FROM 
+                auth.users
+                    WHERE id=${userId} 
     `
         if (!user) {
             throw new UNAUTHORIZED_EXCEPTION("User not found");

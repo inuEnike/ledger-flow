@@ -1,4 +1,5 @@
 import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION } from "../../middleware/error.middleware";
+import type { updateAccountDTO } from "./accounts.schema";
 import type { CreateAccountData, IAccount, IAccountRepository, IAccountService } from "./accounts.types";
 
 export class AccountService implements IAccountService {
@@ -40,5 +41,14 @@ export class AccountService implements IAccountService {
         }
         const accounts = await this.accountRepository.getUserAccounts(userId)
         return accounts
+    }
+
+    updateAccountByAccountId = async (data: updateAccountDTO, account_id: string, user_id: string): Promise<IAccount[]> => {
+
+
+        const account = await this.accountRepository.updateAccountByAccountId(data, account_id, user_id)
+
+        return account
+
     }
 }

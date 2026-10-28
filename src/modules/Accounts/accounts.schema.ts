@@ -8,3 +8,11 @@ export const AccountSchema = z.object({
 })
 
 export type accountDTO = z.infer<typeof AccountSchema>
+
+export const updateAccountSchema = z.object({
+    currency: z.enum(CURRENCY).optional(),
+    account_type: z.enum(ACCOUNT_TYPE).optional()
+})
+
+
+export type updateAccountDTO = z.infer<typeof updateAccountSchema>
