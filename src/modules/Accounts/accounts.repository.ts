@@ -8,22 +8,20 @@ export class AccountRepository implements IAccountRepository {
         this.sql = sql
     }
     getAllAccounts = async (): Promise<IAccount[]> => {
-        try {
-            const accounts = await this.sql<IAccount[]>`
-            SELECT * 
-                FROM accounts.account 
-                    ORDER BY created_at ASC;
+        const accounts = await this.sql<IAccount[]>`
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+                FROM 
+                    accounts.account as a
+                        INNER JOIN auth.users as u
+                            ON a.user_id = u.id
             `
-            return accounts
-        } catch (error) {
+        return accounts
 
-            throw new Error
-        }
     }
 
     getAccountDetailsByUserId = async (userId: string): Promise<IAccount[]> => {
-        try {
-            const account = await this.sql<IAccount[]>`
+
+        const account = await this.sql<IAccount[]>`
                 SELECT a.* 
                     FROM 
                         accounts.account as a
@@ -33,16 +31,11 @@ export class AccountRepository implements IAccountRepository {
 
                     WHERE a.user_id=${userId} 
             `;
-            return account
-        } catch (error) {
-
-            throw Error
-        }
+        return account
     }
 
     createAnAccount = async (data: CreateAccountData): Promise<IAccount[]> => {
-        try {
-            const query = await this.sql<IAccount[]>`
+        const query = await this.sql<IAccount[]>`
             INSERT INTO 
                 accounts.account
                     (account_type, user_id, account_number, currency)
@@ -51,17 +44,10 @@ export class AccountRepository implements IAccountRepository {
                                 ${data.account_type},
                                 ${data.user_id},
                                 ${data.account_number},
-                                ${data.currency},
+                                ${data.currency}
                             )
             RETURNING *
-
         `
-
-            return query
-        } catch (error) {
-
-            throw Error
-        }
-
+        return query
     }
 }
