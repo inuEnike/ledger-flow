@@ -1,7 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
-import { NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION } from "./error.middleware";
+import { FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION } from "./error.middleware";
 import jwt, { JsonWebTokenError, type JwtPayload } from "jsonwebtoken"
 import { ENV } from "../util/dotenv";
+import { sql } from "../database/db";
+import type { IUser } from "../modules/Auth/auth.types";
 
 declare global {
     namespace Express {
@@ -32,7 +34,7 @@ export const AuthMiddleware = (req: Request, _res: Response, next: NextFunction)
             throw new UNAUTHORIZED_EXCEPTION("Invalid token provided, Unauthorized!!")
         }
 
- 
+
 
         req.user = payload.sub
         next()
@@ -49,4 +51,27 @@ export const AuthMiddleware = (req: Request, _res: Response, next: NextFunction)
 
         throw error;
     }
+}
+
+
+export const adminMiddleware = async (req: Request, _res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user
+        const [user] = await sql`
+        SELECT * FROM 
+            auth.users
+                WHERE id=${userId} 
+    `
+        if (!user) {
+            throw new UNAUTHORIZED_EXCEPTION("User not found");
+        }
+        if (user?.role !== "admin") {
+            throw new FORBIDDEN_EXCEPTION("You can't access this resource; Permission not granted")
+        }
+
+        next()
+    } catch (error) {
+        next(error);
+    }
+
 }

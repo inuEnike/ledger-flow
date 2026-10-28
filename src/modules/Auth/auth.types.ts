@@ -5,12 +5,18 @@ export const USER_STATUS = {
     suspended: "suspended"
 } as const
 
+export const USER_ROLE = {
+    admin: "admin",
+    user: "user"
+} as const
+export type userRole = typeof USER_ROLE[keyof typeof USER_ROLE]
 export interface IUser {
     id: string,
     email: string,
     password_hash: string
     first_name: string
     last_name: string
+    role: userRole
     status: typeof USER_STATUS
     email_verified_at: string | null
     created_at: string

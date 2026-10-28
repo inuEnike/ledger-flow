@@ -20,7 +20,6 @@ export class AccountRepository implements IAccountRepository {
     }
 
     getAccountDetailsByUserId = async (userId: string): Promise<IAccount[]> => {
-
         const account = await this.sql<IAccount[]>`
                 SELECT a.* 
                     FROM 
@@ -50,4 +49,16 @@ export class AccountRepository implements IAccountRepository {
         `
         return query
     }
+
+    getUserAccounts = async (userId: string): Promise<IAccount[]> => {
+        const accounts = await this.sql<IAccount[]>`
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+                FROM 
+                    accounts.account as a
+                        INNER JOIN auth.users as u
+                            ON a.user_id = u.id
+                                WHERE u.id = ${userId} 
+        `
+        return accounts
+    };
 }

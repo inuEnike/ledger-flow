@@ -44,9 +44,11 @@ export interface IAccountRepository {
     getAllAccounts: () => Promise<IAccount[]>
     getAccountDetailsByUserId: (userId: string) => Promise<IAccount[]>
     createAnAccount: (data: CreateAccountData) => Promise<IAccount[]>
+    getUserAccounts: (userId: string) => Promise<IAccount[]>
 }
 
 export interface IAccountService {
     getAllAccounts: () => Promise<IAccount[]>
     createAnAccount: (data: CreateAccountData) => Promise<IAccount[]>
+    getUserAccounts: (userId: string) => Promise<IAccount[]>
 }

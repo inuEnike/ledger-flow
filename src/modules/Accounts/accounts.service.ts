@@ -1,4 +1,4 @@
-import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION } from "../../middleware/error.middleware";
+import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION } from "../../middleware/error.middleware";
 import type { CreateAccountData, IAccount, IAccountRepository, IAccountService } from "./accounts.types";
 
 export class AccountService implements IAccountService {
@@ -32,5 +32,13 @@ export class AccountService implements IAccountService {
 
         return await this.accountRepository.createAnAccount(data)
 
+    }
+
+    getUserAccounts = async (userId: string): Promise<IAccount[]> => {
+        if (!userId) {
+            throw new BAD_REQUEST_EXCEPTION("User ID is required")
+        }
+        const accounts = await this.accountRepository.getUserAccounts(userId)
+        return accounts
     }
 }
