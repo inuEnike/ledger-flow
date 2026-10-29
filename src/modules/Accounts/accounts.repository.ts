@@ -1,5 +1,5 @@
 import { type Sql } from "postgres";
-import type { CreateAccountData, IAccount, IAccountRepository } from "./accounts.types";
+import type { CreateAccountData, IAccount, IAccountRepository, STATUS } from "./accounts.types";
 import type { updateAccountDTO } from "./accounts.schema";
 
 
@@ -114,6 +114,19 @@ export class AccountRepository implements IAccountRepository {
             `;
             return account
         }
+    }
+
+    updateAccountStatus = async (status: STATUS, account_id: string): Promise<IAccount | undefined> => {
+        const [account] = await this.sql<IAccount[]>`
+                UPDATE accounts.account
+                    SET
+                        status= COALESCE( ${status}, status)
+                    WHERE
+                        id=${account_id}
+                RETURNING *
+            `
+        return account
+
     }
 
     deleteAccountById = async (accountId: string, userId: string): Promise<IAccount[]> => {

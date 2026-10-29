@@ -48,6 +48,7 @@ export interface IAccountRepository {
     getUserAccounts: (userId: string, user_role: string) => Promise<IAccount[]>
     getAccountByAccountId: (accountId: string, userId: string, user_role: string) => Promise<IAccount | undefined>
     updateAccountByAccountId: (data: updateAccountDTO, account_id: string, user_id: string) => Promise<IAccount[]>
+    updateAccountStatus: (status: STATUS, account_id: string) => Promise<IAccount | undefined>
     deleteAccountById: (accountId: string, userId: string) => Promise<IAccount[]>
 }
 
@@ -57,5 +58,6 @@ export interface IAccountService {
     getUserAccounts: (userId: string, user_role: string) => Promise<IAccount[]>
     getAccountByAccountId: (accountId: string, userId: string, user_role: string) => Promise<IAccount | undefined>
     updateAccountByAccountId: (data: updateAccountDTO, account_id: string, user_id: string) => Promise<IAccount[]>
+    updateAccountStatus: (status: STATUS, account_id: string) => Promise<IAccount | undefined>
     deleteAccountById: (accountId: string, userId: string) => Promise<IAccount[]>
 }

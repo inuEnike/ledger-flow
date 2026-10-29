@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { IAccountService } from "./accounts.types";
 import { ApiResponse } from "../../util/apiResponse";
-import { AccountSchema, deleteAccountSchema, updateAccountSchema } from "./accounts.schema";
+import { AccountSchema, deleteAccountSchema, updateAccountSchema, updateAccountStatusSchema } from "./accounts.schema";
 import { generateAccountNumber } from "../../util/generateAccountNumber";
 import { BAD_REQUEST_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION, VALIDATION_EXCEPTION } from "../../middleware/error.middleware";
 
@@ -151,6 +151,34 @@ export class AccountController {
             next(error)
         }
 
+    }
+    updateAccountStatus = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { accountId } = req.params
+            if (!accountId) {
+                throw new UNAUTHORIZED_EXCEPTION("Authentication is required")
+            }
+            const { status } = req.body
+            const result = updateAccountStatusSchema.safeParse({ status, accountId })
+            if (!result.success) {
+                throw new VALIDATION_EXCEPTION(
+                    result.error.issues.map(issue => issue.message).join(", ")
+                )
+            }
+
+
+            const account = await this.accountService.updateAccountStatus(result.data.status, result.data.accountId as string)
+            ApiResponse({
+                res,
+                message: "Account Updated successfully",
+                status: 200,
+                data: account
+            })
+
+        }
+        catch (error) {
+            next(error)
+        }
     }
 
     deleteAccountById = async (req: Request, res: Response, next: NextFunction) => {
