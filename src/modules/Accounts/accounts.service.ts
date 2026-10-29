@@ -35,11 +35,11 @@ export class AccountService implements IAccountService {
 
     }
 
-    getUserAccounts = async (userId: string): Promise<IAccount[]> => {
+    getUserAccounts = async (userId: string, user_role: string): Promise<IAccount[]> => {
         if (!userId) {
             throw new BAD_REQUEST_EXCEPTION("User ID is required")
         }
-        const accounts = await this.accountRepository.getUserAccounts(userId)
+        const accounts = await this.accountRepository.getUserAccounts(userId, user_role)
         return accounts
     }
 
@@ -51,13 +51,34 @@ export class AccountService implements IAccountService {
 
     }
 
-    getAccountByAccountId = async (accountId: string, userId: string): Promise<IAccount[]> => {
+    getAccountByAccountId = async (accountId: string, userId: string, user_role: string): Promise<IAccount> => {
         if (!accountId || !userId) {
             throw new VALIDATION_EXCEPTION()
         }
 
-        const account = await this.accountRepository.getAccountByAccountId(accountId, userId)
-
+        const account = await this.accountRepository.getAccountByAccountId(accountId, userId, user_role)
+        if (!account) {
+            throw new NOT_FOUND_EXCEPTION("Account not found");
+        }
+        if (user_role !== "admin") {
+            if (account.deleted_at !== null) {
+                throw new NOT_FOUND_EXCEPTION("Account not found");
+            }
+        }
         return account
     }
+
+    deleteAccountById = async (accountId: string, userId: string): Promise<IAccount[]> => {
+        if (!accountId) {
+            throw new VALIDATION_EXCEPTION();
+        }
+
+        const account = await this.accountRepository.deleteAccountById(accountId, userId)
+        if (!account) {
+            throw new NOT_FOUND_EXCEPTION(
+                "Account not found or unavailable"
+            );
+        }
+        return account
+    };
 }

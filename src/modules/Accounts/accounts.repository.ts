@@ -51,16 +51,31 @@ export class AccountRepository implements IAccountRepository {
         return query
     }
 
-    getUserAccounts = async (userId: string): Promise<IAccount[]> => {
-        const accounts = await this.sql<IAccount[]>`
+    getUserAccounts = async (userId: string, user_role: string): Promise<IAccount[]> => {
+        if (user_role === "admin") {
+            const accounts = await this.sql<IAccount[]>`
             SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
                 FROM 
                     accounts.account as a
                         INNER JOIN auth.users as u
                             ON a.user_id = u.id
-                                WHERE u.id = ${userId} 
+                                WHERE u.id = ${userId}
         `
-        return accounts
+            return accounts
+        } else {
+
+            const accounts = await this.sql<IAccount[]>`
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+                FROM 
+                accounts.account as a
+                    INNER JOIN auth.users as u
+                        ON a.user_id = u.id
+                            WHERE u.id = ${userId} 
+                                AND a.deleted_at IS NULL
+                                    AND a.status <> 'closed'
+            `
+            return accounts
+        }
     };
 
     updateAccountByAccountId = async (data: updateAccountDTO, account_id: string, user_id: string): Promise<IAccount[]> => {
@@ -76,15 +91,42 @@ export class AccountRepository implements IAccountRepository {
         `
         return account
     }
-    getAccountByAccountId = async (accountId: string, userId: string): Promise<IAccount[]> => {
-        const account = await this.sql<IAccount[]>`
+
+    getAccountByAccountId = async (accountId: string, userId: string, user_role: string): Promise<IAccount | undefined> => {
+        if (user_role === "admin") {
+            const [account] = await this.sql<IAccount[]>`
             SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
                 FROM 
                     accounts.account as a
                         INNER JOIN auth.users as u
                             ON a.user_id = u.id
                                 WHERE u.id = ${userId} AND a.id = ${accountId} 
-        `;
+            `;
+            return account
+        } else {
+            const [account] = await this.sql<IAccount[]>`
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+                FROM 
+                    accounts.account as a
+                        INNER JOIN auth.users as u
+                            ON a.user_id = u.id
+                                WHERE u.id = ${userId} AND a.id = ${accountId} 
+            `;
+            return account
+        }
+    }
+
+    deleteAccountById = async (accountId: string, userId: string): Promise<IAccount[]> => {
+        const account = await this.sql<IAccount[]>`
+            UPDATE accounts.account
+                SET 
+                    status='closed',
+                    deleted_at = NOW()
+                        WHERE id=${accountId} 
+                            AND user_id=${userId}
+                            AND deleted_at IS NULL
+            RETURNING *
+        `
         return account
     }
 }
