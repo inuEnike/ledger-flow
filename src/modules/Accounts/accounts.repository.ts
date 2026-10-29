@@ -76,4 +76,15 @@ export class AccountRepository implements IAccountRepository {
         `
         return account
     }
+    getAccountByAccountId = async (accountId: string, userId: string): Promise<IAccount[]> => {
+        const account = await this.sql<IAccount[]>`
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+                FROM 
+                    accounts.account as a
+                        INNER JOIN auth.users as u
+                            ON a.user_id = u.id
+                                WHERE u.id = ${userId} AND a.id = ${accountId} 
+        `;
+        return account
+    }
 }

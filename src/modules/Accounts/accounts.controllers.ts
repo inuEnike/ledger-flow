@@ -92,9 +92,7 @@ export class AccountController {
         try {
             const user_id = req.user
 
-
             const { accountId } = req.params
-
 
             if (!accountId) {
                 throw new BAD_REQUEST_EXCEPTION("Account ID is required")
@@ -121,5 +119,26 @@ export class AccountController {
         } catch (error) {
             next(error)
         }
+    }
+
+    getAccountByAccountId = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+
+            const { accountId } = req.params
+
+            const userId = req.user
+
+            const account = await this.accountService.getAccountByAccountId(accountId as string, userId)
+
+            ApiResponse({
+                res,
+                message: "Account found ",
+                status: 200,
+                data: account
+            })
+        } catch (error) {
+            next(error)
+        }
+
     }
 }

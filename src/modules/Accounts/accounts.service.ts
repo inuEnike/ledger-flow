@@ -1,4 +1,4 @@
-import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION } from "../../middleware/error.middleware";
+import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION, VALIDATION_EXCEPTION } from "../../middleware/error.middleware";
 import type { updateAccountDTO } from "./accounts.schema";
 import type { CreateAccountData, IAccount, IAccountRepository, IAccountService } from "./accounts.types";
 
@@ -45,10 +45,19 @@ export class AccountService implements IAccountService {
 
     updateAccountByAccountId = async (data: updateAccountDTO, account_id: string, user_id: string): Promise<IAccount[]> => {
 
-
         const account = await this.accountRepository.updateAccountByAccountId(data, account_id, user_id)
 
         return account
 
+    }
+
+    getAccountByAccountId = async (accountId: string, userId: string): Promise<IAccount[]> => {
+        if (!accountId || !userId) {
+            throw new VALIDATION_EXCEPTION()
+        }
+
+        const account = await this.accountRepository.getAccountByAccountId(accountId, userId)
+
+        return account
     }
 }
