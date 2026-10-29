@@ -1,6 +1,6 @@
 import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION, VALIDATION_EXCEPTION } from "../../middleware/error.middleware";
 import type { updateAccountDTO } from "./accounts.schema";
-import type { CreateAccountData, IAccount, IAccountRepository, IAccountService } from "./accounts.types";
+import type { CreateAccountData, IAccount, IAccountRepository, IAccountService, STATUS } from "./accounts.types";
 
 export class AccountService implements IAccountService {
     private readonly accountRepository: IAccountRepository
@@ -64,6 +64,18 @@ export class AccountService implements IAccountService {
             if (account.deleted_at !== null) {
                 throw new NOT_FOUND_EXCEPTION("Account not found");
             }
+        }
+        return account
+    }
+
+    updateAccountStatus = async (status: STATUS, user_id: string): Promise<IAccount | undefined> => {
+        if (!user_id) {
+            throw new VALIDATION_EXCEPTION()
+        }
+
+        const account = await this.accountRepository.updateAccountStatus(status, user_id)
+        if (!account) {
+            throw new NOT_FOUND_EXCEPTION("No account found!")
         }
         return account
     }

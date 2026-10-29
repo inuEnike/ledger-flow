@@ -1,5 +1,5 @@
 import z from "zod";
-import { ACCOUNT_TYPE, CURRENCY } from "./accounts.types";
+import { ACCOUNT_STATUS, ACCOUNT_TYPE, CURRENCY } from "./accounts.types";
 
 export const AccountSchema = z.object({
     account_type: z.enum(ACCOUNT_TYPE),
@@ -21,4 +21,9 @@ export type updateAccountDTO = z.infer<typeof updateAccountSchema>
 export const deleteAccountSchema = z.object({
     accountId: z.uuid("Invalid account ID"),
     userId: z.uuid("Invalid user ID"),
+});
+
+export const updateAccountStatusSchema = z.object({
+    status: z.enum(ACCOUNT_STATUS),
+    accountId: z.uuid("Invalid user ID"),
 });

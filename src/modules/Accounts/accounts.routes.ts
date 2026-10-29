@@ -19,6 +19,7 @@ route.get("/", adminMiddleware, controller.getAllAccounts)
     .patch("/:accountId", controller.updateAccountByAccountId)
     .get("/account/:accountId", controller.getAccountByAccountId)
     .patch("/close-account/:accountId", controller.deleteAccountById)
+    .patch('/account-status/:accountId', controller.updateAccountStatus)
 
 
 export default route

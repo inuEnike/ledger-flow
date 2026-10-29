@@ -13,12 +13,6 @@ app.use(cookieParser())
 const prefix = "/api/v1"
 
 // Open routess
-app.use(`${prefix}/auth`, AuthRouter)
-
-//protected routes
-app.use(AuthMiddleware)
-app.use(`${prefix}/accounts`, AccountRouter)
-
 app.get(`${prefix}/health-check`, (_req: Request, res: Response): void => {
     ApiResponse({
         res,
@@ -26,6 +20,13 @@ app.get(`${prefix}/health-check`, (_req: Request, res: Response): void => {
         message: "API beeping and healthy"
     })
 })
+app.use(`${prefix}/auth`, AuthRouter)
+
+//protected routes
+app.use(AuthMiddleware)
+app.use(`${prefix}/accounts`, AccountRouter)
+
+
 
 
 app.use(ErrorMiddleware);
