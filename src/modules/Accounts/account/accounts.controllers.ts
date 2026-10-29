@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import type { IAccountService } from "./accounts.types";
-import { ApiResponse } from "../../util/apiResponse";
+import { ApiResponse } from "../../../util/apiResponse";
 import { AccountSchema, deleteAccountSchema, updateAccountSchema, updateAccountStatusSchema } from "./accounts.schema";
-import { generateAccountNumber } from "../../util/generateAccountNumber";
-import { BAD_REQUEST_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION, VALIDATION_EXCEPTION } from "../../middleware/error.middleware";
+import { generateAccountNumber } from "../../../util/generateAccountNumber";
+import { BAD_REQUEST_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION, VALIDATION_EXCEPTION } from "../../../middleware/error.middleware";
 
 export class AccountController {
     private readonly accountService: IAccountService

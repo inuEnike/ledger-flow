@@ -1,9 +1,9 @@
 import express from 'express'
-import { sql } from '../../database/db'
+import { sql } from '../../../database/db'
 import { AccountController } from './accounts.controllers'
 import { AccountService } from './accounts.service'
 import { AccountRepository } from './accounts.repository'
-import { adminMiddleware } from '../../middleware/auth.middleware'
+import { adminMiddleware } from '../../../middleware/auth.middleware'
 
 
 const route = express()

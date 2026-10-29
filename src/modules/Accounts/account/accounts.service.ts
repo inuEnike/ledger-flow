@@ -1,4 +1,4 @@
-import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION, VALIDATION_EXCEPTION } from "../../middleware/error.middleware";
+import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION, VALIDATION_EXCEPTION } from "../../../middleware/error.middleware";
 import type { updateAccountDTO } from "./accounts.schema";
 import type { CreateAccountData, IAccount, IAccountRepository, IAccountService, STATUS } from "./accounts.types";
 
