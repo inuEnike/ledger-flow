@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import type { IAccountService } from "./accounts.types";
 import { ApiResponse } from "../../util/apiResponse";
-import { AccountSchema, updateAccountSchema } from "./accounts.schema";
+import { AccountSchema, deleteAccountSchema, updateAccountSchema } from "./accounts.schema";
 import { generateAccountNumber } from "../../util/generateAccountNumber";
-import { BAD_REQUEST_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION } from "../../middleware/error.middleware";
+import { BAD_REQUEST_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION, VALIDATION_EXCEPTION } from "../../middleware/error.middleware";
 
 export class AccountController {
     private readonly accountService: IAccountService
@@ -31,25 +31,25 @@ export class AccountController {
 
             const data = req.body
 
-            console.log(data);
 
-            const userId = req.user
-            console.log(userId);
+
+            const userId = req.user?.id
+            if (!userId) {
+                throw new UNAUTHORIZED_EXCEPTION("Authentication required")
+            }
+
 
             const result = AccountSchema.parse(data)
 
-            console.log({ result });
 
 
             const accountNumber = generateAccountNumber()
-            console.log(accountNumber);
 
             const account = await this.accountService.createAnAccount({
                 ...result,
                 user_id: userId,
                 account_number: accountNumber
             })
-            console.log({ account });
 
             ApiResponse({
                 res,
@@ -70,11 +70,12 @@ export class AccountController {
             if (!userId) {
                 throw new NOT_FOUND_EXCEPTION("Account ID is required")
             }
-            const loggedinUserId = req.user
+            const loggedinUserId = req.user?.id
+            const loggedInUserRole = req.user?.role
             if (userId !== loggedinUserId) {
                 throw new UNAUTHORIZED_EXCEPTION("Unauthorized; You are not allowed here!!")
             }
-            const accounts = await this.accountService.getUserAccounts(userId as string)
+            const accounts = await this.accountService.getUserAccounts(userId as string, loggedInUserRole as string)
 
             ApiResponse({
                 res,
@@ -90,8 +91,10 @@ export class AccountController {
 
     updateAccountByAccountId = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const user_id = req.user
-
+            const userId = req.user?.id
+            if (!userId) {
+                throw new UNAUTHORIZED_EXCEPTION("Authentication required")
+            }
             const { accountId } = req.params
 
             if (!accountId) {
@@ -109,7 +112,7 @@ export class AccountController {
             }
 
             const validatedData = result.data;
-            const account = await this.accountService.updateAccountByAccountId(validatedData, accountId as string, user_id)
+            const account = await this.accountService.updateAccountByAccountId(validatedData, accountId as string, userId)
             ApiResponse({
                 res,
                 message: "User account(s) found ",
@@ -126,9 +129,17 @@ export class AccountController {
 
             const { accountId } = req.params
 
-            const userId = req.user
+            const userId = req.user?.id
 
-            const account = await this.accountService.getAccountByAccountId(accountId as string, userId)
+            const user_role = req.user?.role
+            console.log({ user_role });
+
+
+            if (!userId || !user_role) {
+                throw new UNAUTHORIZED_EXCEPTION("Authentication required")
+            }
+
+            const account = await this.accountService.getAccountByAccountId(accountId as string, userId, user_role)
 
             ApiResponse({
                 res,
@@ -140,5 +151,34 @@ export class AccountController {
             next(error)
         }
 
+    }
+
+    deleteAccountById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userId = req.user?.id
+            if (!userId) {
+                throw new UNAUTHORIZED_EXCEPTION("Authentication required")
+            }
+            const { accountId } = req.params
+
+            const result = deleteAccountSchema.safeParse({ accountId, userId })
+            if (!result.success) {
+                throw new VALIDATION_EXCEPTION(
+                    result.error.issues.map(issue => issue.message).join(", ")
+                );
+            }
+
+            const account = await this.accountService.deleteAccountById(result.data.accountId, userId)
+
+            ApiResponse({
+                res,
+                message: "Account Deleted successfully",
+                status: 200,
+                data: account
+            })
+
+        } catch (error) {
+            next(error)
+        }
     }
 }

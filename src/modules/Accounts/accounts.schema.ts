@@ -16,3 +16,9 @@ export const updateAccountSchema = z.object({
 
 
 export type updateAccountDTO = z.infer<typeof updateAccountSchema>
+
+
+export const deleteAccountSchema = z.object({
+    accountId: z.uuid("Invalid account ID"),
+    userId: z.uuid("Invalid user ID"),
+});

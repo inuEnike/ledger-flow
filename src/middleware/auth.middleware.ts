@@ -8,12 +8,15 @@ import type { IUser } from "../modules/Auth/auth.types";
 declare global {
     namespace Express {
         interface Request {
-            user?: any;
+            user?: {
+                id: string;
+                role: string;
+            };
         }
     }
 }
 
-export const AuthMiddleware = (req: Request, _res: Response, next: NextFunction) => {
+export const AuthMiddleware = async (req: Request, _res: Response, next: NextFunction) => {
     const authHeaders = req.headers.authorization
     if (!authHeaders || !authHeaders.startsWith("Bearer ")) {
         throw new UNAUTHORIZED_EXCEPTION("Unauthorized; Invalid token")
@@ -35,8 +38,20 @@ export const AuthMiddleware = (req: Request, _res: Response, next: NextFunction)
         }
 
 
+        const [user] = await sql`
+            SELECT id, role
+            FROM auth.users
+            WHERE id = ${payload.sub!}
+        `;
 
-        req.user = payload.sub
+        if (!user) {
+            throw new UNAUTHORIZED_EXCEPTION("User not found");
+        }
+
+        req.user = {
+            id: user.id,
+            role: user.role,
+        };
         next()
 
     }
@@ -56,17 +71,12 @@ export const AuthMiddleware = (req: Request, _res: Response, next: NextFunction)
 
 export const adminMiddleware = async (req: Request, _res: Response, next: NextFunction) => {
     try {
-        const userId = req.user
-        const [user] = await sql`
-        SELECT role 
-            FROM 
-                auth.users
-                    WHERE id=${userId} 
-    `
-        if (!user) {
-            throw new UNAUTHORIZED_EXCEPTION("User not found");
+
+
+        if (!req.user) {
+            throw new UNAUTHORIZED_EXCEPTION("Authentication required");
         }
-        if (user?.role !== "admin") {
+        if (req.user?.role !== "admin") {
             throw new FORBIDDEN_EXCEPTION("You can't access this resource; Permission not granted")
         }
 

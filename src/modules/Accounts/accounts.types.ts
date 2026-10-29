@@ -33,6 +33,7 @@ export interface IAccount {
     account_number: string
     status: STATUS
     currency: CurrencyCode
+    deleted_at: string | null;
     created_at: string
     updated_at: string
 }
@@ -44,15 +45,17 @@ export interface IAccountRepository {
     getAllAccounts: () => Promise<IAccount[]>
     getAccountDetailsByUserId: (userId: string) => Promise<IAccount[]>
     createAnAccount: (data: CreateAccountData) => Promise<IAccount[]>
-    getUserAccounts: (userId: string) => Promise<IAccount[]>
-    getAccountByAccountId: (accountId: string, userId: string) => Promise<IAccount[]>
+    getUserAccounts: (userId: string, user_role: string) => Promise<IAccount[]>
+    getAccountByAccountId: (accountId: string, userId: string, user_role: string) => Promise<IAccount | undefined>
     updateAccountByAccountId: (data: updateAccountDTO, account_id: string, user_id: string) => Promise<IAccount[]>
+    deleteAccountById: (accountId: string, userId: string) => Promise<IAccount[]>
 }
 
 export interface IAccountService {
     getAllAccounts: () => Promise<IAccount[]>
     createAnAccount: (data: CreateAccountData) => Promise<IAccount[]>
-    getUserAccounts: (userId: string) => Promise<IAccount[]>
-    getAccountByAccountId: (accountId: string, userId: string) => Promise<IAccount[]>
+    getUserAccounts: (userId: string, user_role: string) => Promise<IAccount[]>
+    getAccountByAccountId: (accountId: string, userId: string, user_role: string) => Promise<IAccount | undefined>
     updateAccountByAccountId: (data: updateAccountDTO, account_id: string, user_id: string) => Promise<IAccount[]>
+    deleteAccountById: (accountId: string, userId: string) => Promise<IAccount[]>
 }
