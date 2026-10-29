@@ -12,7 +12,9 @@ const service = new AccountService(repository)
 const controller = new AccountController(service)
 
 
-route.get("/", controller.getAllAccounts).post("/", controller.createAnAccount)
+route.get("/",
+    //  adminMiddleware, 
+    controller.getAllAccounts).post("/", controller.createAnAccount).get("/:userId", controller.getUserAccounts).patch("/:accountId", controller.updateAccountByAccountId).get("/account/:accountId", controller.getAccountByAccountId)
 
 
 export default route

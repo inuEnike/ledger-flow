@@ -88,6 +88,7 @@ export class AuthService implements IAuthService {
             first_name: user.first_name,
             last_name: user.last_name,
             status: user.status,
+            role: user.role,
             email_verified_at: user.email_verified_at,
             created_at: user.created_at,
             updated_at: user.updated_at
