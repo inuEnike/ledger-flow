@@ -3,8 +3,9 @@ import { ApiResponse } from "./util/apiResponse.ts";
 import { ErrorMiddleware } from "./middleware/error.middleware.ts";
 import AuthRouter from "./modules/Auth/auth.routes.ts"
 import AccountRouter from "./modules/Accounts/account/accounts.routes.ts"
+import AccountTierRouter from "./modules/Accounts/accountTier/accountTier.routes.ts"
 import cookieParser from "cookie-parser"
-import { AuthMiddleware } from "./middleware/auth.middleware.ts";
+import { adminMiddleware, AuthMiddleware } from "./middleware/auth.middleware.ts";
 
 export const app: Express = express()
 
@@ -25,6 +26,11 @@ app.use(`${prefix}/auth`, AuthRouter)
 //protected routes
 app.use(AuthMiddleware)
 app.use(`${prefix}/accounts`, AccountRouter)
+
+app.use(adminMiddleware)
+app.use(`${prefix}/account-tier`, AccountTierRouter)
+
+
 
 
 

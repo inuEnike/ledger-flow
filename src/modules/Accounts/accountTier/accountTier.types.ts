@@ -10,9 +10,18 @@ export interface IAccountTier {
 }
 
 export interface IAccountTierRepository {
-    getAllTier: () => Promise<IAccountTier[]>
+    getAllTiers: () => Promise<IAccountTier[]>
     getTierById: (id: string) => Promise<IAccountTier | undefined>
+    getTierByName: (name: string) => Promise<IAccountTier | undefined>
     createTier: (data: createTierDTO) => Promise<IAccountTier[]>
     updateTierById: (data: updateTierDTO, id: string) => Promise<IAccountTier | undefined>
     deleteTierById: (id: string) => Promise<IAccountTier | undefined>
+}
+
+
+export interface IAccountTierService {
+    getAllTiers: () => Promise<IAccountTier[]>
+    getTierById: (id: string) => Promise<IAccountTier | undefined>
+    createTier: (data: createTierDTO) => Promise<IAccountTier[]>
+
 }

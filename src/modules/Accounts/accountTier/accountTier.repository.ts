@@ -7,11 +7,11 @@ export class AccountTierRepository implements IAccountTierRepository {
     constructor(sql: Sql) {
         this.sql = sql
     }
-    getAllTier = async (): Promise<IAccountTier[]> => {
+    getAllTiers = async (): Promise<IAccountTier[]> => {
         const tiers = await this.sql<IAccountTier[]>`
             SELECT * 
                 FROM
-                    accounts.account_tier
+                    accounts.account_tiers
                     ORDER BY name ASC 
         `
         console.log(tiers);
@@ -23,15 +23,25 @@ export class AccountTierRepository implements IAccountTierRepository {
         const [tier] = await this.sql<IAccountTier[]>`
             SELECT * 
                 FROM
-                    accounts.account_tier
+                    accounts.account_tiers
                         WHERE id=${id} 
+        `
+        return tier
+    }
+    getTierByName = async (name: string): Promise<IAccountTier | undefined> => {
+        const [tier] = await this.sql<IAccountTier[]>`
+            SELECT * 
+                FROM
+                    accounts.account_tiers
+                         WHERE LOWER(name) = LOWER(${name})
+            LIMIT 1
         `
         return tier
     }
     createTier = async (data: createTierDTO): Promise<IAccountTier[]> => {
         const query = await this.sql<IAccountTier[]>`
             INSERT INTO
-                accounts.account_tier
+                accounts.account_tiers
                     (name, balance_limit, daily_transfer_limit)
                         VALUES
                             (
@@ -46,7 +56,7 @@ export class AccountTierRepository implements IAccountTierRepository {
     updateTierById = async (data: updateTierDTO, id: string): Promise<IAccountTier | undefined> => {
         const [tier] = await this.sql<IAccountTier[]> `
             UPDATE 
-                accounts.account_tier
+                accounts.account_tiers
                     SET
                         name = COALESCE(${data.name ?? null}, name)
                         balance_limit = COALESCE(${data.balance_limit ?? null}, name)
@@ -60,7 +70,7 @@ export class AccountTierRepository implements IAccountTierRepository {
     deleteTierById = async (id: string): Promise<IAccountTier | undefined> => {
         const [tier] = await this.sql<IAccountTier[]> `
                 DELETE FROM
-                    accounts.account_tier
+                    accounts.account_tiers
                         WHERE id${id}
          `
         return tier
