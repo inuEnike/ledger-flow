@@ -14,8 +14,6 @@ export class AccountTierRepository implements IAccountTierRepository {
                     accounts.account_tiers
                     ORDER BY name ASC 
         `
-        console.log(tiers);
-
         return tiers
     }
 
@@ -58,9 +56,9 @@ export class AccountTierRepository implements IAccountTierRepository {
             UPDATE 
                 accounts.account_tiers
                     SET
-                        name = COALESCE(${data.name ?? null}, name)
-                        balance_limit = COALESCE(${data.balance_limit ?? null}, name)
-                        daily_transfet_limit = COALESCE(${data.daily_transfer_limit ?? null}, name)
+                        name = COALESCE(${data.name ?? null}, name),
+                        balance_limit = COALESCE(${data.balance_limit ?? null}, balance_limit),
+                        daily_transfer_limit = COALESCE(${data.daily_transfer_limit ?? null}, balance_limit)
                 WHERE id=${id}
             RETURNING *
         `

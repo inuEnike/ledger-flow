@@ -23,5 +23,5 @@ export interface IAccountTierService {
     getAllTiers: () => Promise<IAccountTier[]>
     getTierById: (id: string) => Promise<IAccountTier | undefined>
     createTier: (data: createTierDTO) => Promise<IAccountTier[]>
-
+    updateTierById: (data: updateTierDTO, id: string) => Promise<IAccountTier | undefined>
 }
