@@ -37,4 +37,22 @@ export class AccountTierController {
         }
     }
 
+    updateTierById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const data = req.body
+            const { id } = req.params
+            const tier = await this.accountTierService.updateTierById(data, id as string)
+            ApiResponse({
+                res,
+                message: `account tier(s) updated successfully`,
+                status: 200,
+                data: tier
+            })
+        }
+        catch (error) {
+            next(error)
+        }
+
+    }
+
 }
