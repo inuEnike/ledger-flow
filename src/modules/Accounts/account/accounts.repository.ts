@@ -120,7 +120,8 @@ export class AccountRepository implements IAccountRepository {
         const [account] = await this.sql<IAccount[]>`
                 UPDATE accounts.account
                     SET
-                        status= COALESCE( ${status}, status)
+                        status= COALESCE( ${status}, status),
+                        updated_at = NOW()
                     WHERE
                         id=${account_id}
                 RETURNING *

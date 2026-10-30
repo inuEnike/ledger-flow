@@ -58,7 +58,8 @@ export class AccountTierRepository implements IAccountTierRepository {
                     SET
                         name = COALESCE(${data.name ?? null}, name),
                         balance_limit = COALESCE(${data.balance_limit ?? null}, balance_limit),
-                        daily_transfer_limit = COALESCE(${data.daily_transfer_limit ?? null}, balance_limit)
+                        daily_transfer_limit = COALESCE(${data.daily_transfer_limit ?? null}, balance_limit),
+                        updated_at = NOW()
                 WHERE id=${id}
             RETURNING *
         `
