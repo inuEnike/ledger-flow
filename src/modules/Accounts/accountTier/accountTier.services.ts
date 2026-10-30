@@ -1,4 +1,4 @@
-import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, VALIDATION_EXCEPTION } from "../../../middleware/error.middleware";
+import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION, VALIDATION_EXCEPTION } from "../../../middleware/error.middleware";
 import { createTierSchema, updateTierSchema, type createTierDTO, type updateTierDTO } from "./accountTier.schema";
 import type { IAccountTier, IAccountTierRepository, IAccountTierService } from "./accountTier.types";
 
@@ -65,5 +65,12 @@ export class AccountTierService implements IAccountTierService {
         }
         const tier = await this.accountTierRepository.updateTierById(result.data, id)
         return tier
+    }
+    deleteTierById = async (id: string): Promise<IAccountTier | undefined> => {
+        const tier = await this.accountTierRepository.getTierById(id)
+        if (!tier) {
+            throw new NOT_FOUND_EXCEPTION(`Tier with the Id of ${id} not found`)
+        }
+        return await this.accountTierRepository.deleteTierById(id)
     }
 }

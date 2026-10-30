@@ -28,7 +28,7 @@ export class AccountTierController {
             const tier = await this.accountTierService.createTier(data)
             ApiResponse({
                 res,
-                message: `account tier(s) created successfully`,
+                message: `account tier created successfully`,
                 status: 201,
                 data: tier
             })
@@ -54,5 +54,17 @@ export class AccountTierController {
         }
 
     }
-
+    deleteTierById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params
+            await this.accountTierService.deleteTierById(id as string)
+            ApiResponse({
+                res,
+                message: `account tier(s) deleted successfully`,
+                status: 200,
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
 }
