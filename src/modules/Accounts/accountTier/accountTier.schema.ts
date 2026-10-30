@@ -1,6 +1,6 @@
 import z from "zod";
 
-const createTierSchema = z.object({
+export const createTierSchema = z.object({
     name: z.string().min(4),
     balance_limit: z.number(),
     daily_transfer_limit: z.number(),
