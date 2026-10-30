@@ -8,6 +8,6 @@ const route = express()
 const repository = new AccountTierRepository(sql)
 const service = new AccountTierService(repository)
 const controllers = new AccountTierController(service)
-route.get("/", controllers.getAllTiers).post('/', controllers.createTier).patch('/:id', controllers.updateTierById)
+route.get("/", controllers.getAllTiers).post('/', controllers.createTier).patch('/:id', controllers.updateTierById).delete("/:id", controllers.deleteTierById)
 
 export default route

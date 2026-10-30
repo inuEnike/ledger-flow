@@ -69,7 +69,8 @@ export class AccountTierRepository implements IAccountTierRepository {
         const [tier] = await this.sql<IAccountTier[]> `
                 DELETE FROM
                     accounts.account_tiers
-                        WHERE id${id}
+                        WHERE id = ${id}
+                RETURNING *
          `
         return tier
     }
