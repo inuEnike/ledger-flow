@@ -1,5 +1,5 @@
 import type { Sql } from "postgres";
-import type { IAccountDetails, IAccountDetailsRepository } from "./accountDetails.types";
+import type { IAccountDetails, IAccountDetailsRepository, userRole } from "./accountDetails.types";
 
 export class AccountDetailsRepository implements IAccountDetailsRepository {
     private readonly sql: Sql
@@ -14,4 +14,17 @@ export class AccountDetailsRepository implements IAccountDetailsRepository {
         `
         return query
     }
+    getSingleAccountDetailById = async (id: string, account_id: string): Promise<IAccountDetails | undefined> => {
+
+        const [query] = await this.sql<IAccountDetails[]>`
+            SELECT * 
+                FROM 
+                    accounts.account_details
+                        WHERE id=${id} 
+                            AND account_id=${account_id}
+
+        `
+        return query
+    }
+    
 }
