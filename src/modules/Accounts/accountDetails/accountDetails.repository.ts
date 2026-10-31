@@ -1,5 +1,6 @@
 import type { Sql } from "postgres";
 import type { IAccountDetails, IAccountDetailsRepository, userRole } from "./accountDetails.types";
+import type { CreateAccountDetailsDTO } from "./accountDetails.schema";
 
 export class AccountDetailsRepository implements IAccountDetailsRepository {
     private readonly sql: Sql
@@ -69,7 +70,20 @@ export class AccountDetailsRepository implements IAccountDetailsRepository {
                 ON a.id = d.account_id
 
             WHERE d.id = ${id}
-            AND d.account_id = ${account_id};
+                AND d.account_id = ${account_id};
+        `
+        return query
+    }
+    createAccountDetail = async (data: CreateAccountDetailsDTO): Promise<IAccountDetails[]> => {
+        const query = await this.sql<IAccountDetails[]>`
+            INSERT 
+                INTO accounts.account_details
+                    (account_id, account_tier_id)
+                        VALUES (
+                            ${data.account_id},
+                            ${data.account_tier_id}
+                        )
+            RETURNING *
         `
         return query
     }
