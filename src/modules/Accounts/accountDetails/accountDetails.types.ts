@@ -5,10 +5,14 @@ export interface IAccountDetails {
     created_at: string
     updated_at: string
 }
+export type userRole = "user" | "admin"
 export interface IAccountDetailsRepository {
     getAllAccountDetails: () => Promise<IAccountDetails[]>
+    getSingleAccountDetailById: (id: string, account_id: string) => Promise<IAccountDetails | undefined>
 }
 
 export interface IAccountDetailsService {
     getAllAccountDetails: () => Promise<IAccountDetails[]>
+    getSingleAccountDetailById: (id: string, user_id: string, account_id: string, user_role: userRole
+    ) => Promise<IAccountDetails | undefined>
 }
