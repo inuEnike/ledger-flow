@@ -1,6 +1,6 @@
 import z from "zod";
 
-const createAccountDetailsSchema = z.object({
+export const createAccountDetailsSchema = z.object({
     account_id: z.string(),
     account_tier_id: z.string(),
 })

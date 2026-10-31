@@ -40,4 +40,20 @@ export class AccountDetailsController {
             next(error)
         }
     }
+    createAccountDetail = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const data = req.body
+            const userId = req.user?.id
+            const userRole = req.user?.role
+            const detail = await this.accountDetailsService.createAccountDetail(data, userId as string, userRole as userRole)
+            ApiResponse({
+                res,
+                message: `account detail created successfullyt`,
+                status: 201,
+                data: detail
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
 }

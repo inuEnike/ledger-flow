@@ -22,6 +22,7 @@ app.get(`${prefix}/health-check`, (_req: Request, res: Response): void => {
         message: "API beeping and healthy"
     })
 })
+
 app.use(`${prefix}/auth`, AuthRouter)
 
 //protected routes
@@ -33,9 +34,11 @@ app.use(`${prefix}/account-details`, AccountDetailsRouter)
 app.use(adminMiddleware)
 app.use(`${prefix}/account-tier`, AccountTierRouter)
 
-
-
-
-
-
 app.use(ErrorMiddleware);
+app.use((_req: Request, res: Response) => {
+    ApiResponse({
+        res,
+        status: 404,
+        message: "Route not found"
+    })
+})

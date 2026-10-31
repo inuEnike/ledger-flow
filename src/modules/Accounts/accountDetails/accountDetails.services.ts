@@ -1,5 +1,6 @@
-import { NOT_FOUND_EXCEPTION } from "../../../middleware/error.middleware";
+import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION, VALIDATION_EXCEPTION } from "../../../middleware/error.middleware";
 import type { IAccountRepository } from "../account/accounts.types";
+import { createAccountDetailsSchema, type CreateAccountDetailsDTO } from "./accountDetails.schema";
 import type { IAccountDetails, IAccountDetailsRepository, IAccountDetailsService, userRole } from "./accountDetails.types";
 
 export class AccountDetailsService implements IAccountDetailsService {
@@ -26,5 +27,25 @@ export class AccountDetailsService implements IAccountDetailsService {
         }
 
         return accountDetail
+    }
+    createAccountDetail = async (data: CreateAccountDetailsDTO, user_id: string, user_role: userRole): Promise<IAccountDetails[]> => {
+        const result = createAccountDetailsSchema.safeParse(data)
+
+        if (!result.success) {
+            const message = result.error.issues
+                .map((issue) => issue.message)
+                .join(", ");
+
+            throw new BAD_REQUEST_EXCEPTION(message);
+        }
+        const account = await this.accountRepository.getAccountByAccountId(data.account_id, user_id, user_role)
+        if (account) {
+            throw new CONFLICT_EXCEPTION("Account details already exists")
+        }
+        const detail = await this.accountDetailRepository.createAccountDetail(result.data)
+        if (!detail) {
+            throw new BAD_REQUEST_EXCEPTION("An error occurred while creating account detail")
+        }
+        return detail
     }
 }
