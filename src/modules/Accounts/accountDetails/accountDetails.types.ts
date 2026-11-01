@@ -12,6 +12,7 @@ export interface IAccountDetailsRepository {
     getAllAccountDetails: () => Promise<IAccountDetails[]>
     getSingleAccountDetailById: (id: string, account_id: string) => Promise<IAccountDetails | undefined>
     createAccountDetail: (data: CreateAccountDetailsDTO) => Promise<IAccountDetails[]>
+    updateAccountDetail: (id: string, account_tier_id: string) => Promise<IAccountDetails | undefined>
 }
 
 export interface IAccountDetailsService {
