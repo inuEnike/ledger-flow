@@ -21,6 +21,10 @@ export class AccountDetailsService implements IAccountDetailsService {
             throw new NOT_FOUND_EXCEPTION("Account not found");
         }
 
+        if (user_role === "user" && account.status === "closed") {
+            throw new NOT_FOUND_EXCEPTION("Account not found")
+        }
+
         const accountDetail = await this.accountDetailRepository.getSingleAccountDetailById(id, account_id)
         if (!accountDetail) {
             throw new NOT_FOUND_EXCEPTION("Account not found");
