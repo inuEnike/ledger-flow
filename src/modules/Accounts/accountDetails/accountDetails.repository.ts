@@ -87,14 +87,13 @@ export class AccountDetailsRepository implements IAccountDetailsRepository {
         `
         return query
     }
-    updateAccountDetail = async (id: string, account_tier_id: string): Promise<IAccountDetails | undefined> => {
+    updateAccountDetail = async (accountDetailId: string, account_tier_id: string): Promise<IAccountDetails | undefined> => {
         const [detail] = await this.sql<IAccountDetails[]>`
             UPDATE accounts.account_details
                 SET
                     account_tier_id = ${account_tier_id}
-                WHERE id = ${id}
+                WHERE id = ${accountDetailId}
         `
         return detail
     }
-
 }

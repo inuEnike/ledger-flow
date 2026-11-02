@@ -48,7 +48,25 @@ export class AccountDetailsController {
             const detail = await this.accountDetailsService.createAccountDetail(data, userId as string, userRole as userRole)
             ApiResponse({
                 res,
-                message: `account detail created successfullyt`,
+                message: `account detail created successfully`,
+                status: 201,
+                data: detail
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    updateAccountDetail = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { accountDetailId } = req.params;
+            const account_tier_id = req.body;
+
+
+            const detail = await this.accountDetailsService.updateAccountDetail(accountDetailId as string, account_tier_id)
+
+            ApiResponse({
+                res,
+                message: `account detail updated successfully`,
                 status: 201,
                 data: detail
             })

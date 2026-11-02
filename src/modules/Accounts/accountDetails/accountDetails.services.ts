@@ -1,6 +1,6 @@
 import { BAD_REQUEST_EXCEPTION, CONFLICT_EXCEPTION, NOT_FOUND_EXCEPTION, VALIDATION_EXCEPTION } from "../../../middleware/error.middleware";
 import type { IAccountRepository } from "../account/accounts.types";
-import { createAccountDetailsSchema, type CreateAccountDetailsDTO } from "./accountDetails.schema";
+import { createAccountDetailsSchema, updateAccountDetailsSchema, type CreateAccountDetailsDTO } from "./accountDetails.schema";
 import type { IAccountDetails, IAccountDetailsRepository, IAccountDetailsService, userRole } from "./accountDetails.types";
 
 export class AccountDetailsService implements IAccountDetailsService {
@@ -51,5 +51,25 @@ export class AccountDetailsService implements IAccountDetailsService {
             throw new BAD_REQUEST_EXCEPTION("An error occurred while creating account detail")
         }
         return detail
+    }
+
+    updateAccountDetail = async (accountDetailId: string, data: { account_tier_id: string }): Promise<IAccountDetails | undefined> => {
+
+
+        const result = updateAccountDetailsSchema.safeParse(data)
+
+
+        if (!result.success) {
+            const message = result.error.issues
+                .map((issue) => issue.message)
+                .join(", ");
+
+            throw new VALIDATION_EXCEPTION(message)
+        }
+
+        const account = await this.accountDetailRepository.updateAccountDetail(accountDetailId, data.account_tier_id)
+
+
+        return account
     }
 }

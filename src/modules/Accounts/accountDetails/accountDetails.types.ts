@@ -12,7 +12,8 @@ export interface IAccountDetailsRepository {
     getAllAccountDetails: () => Promise<IAccountDetails[]>
     getSingleAccountDetailById: (id: string, account_id: string) => Promise<IAccountDetails | undefined>
     createAccountDetail: (data: CreateAccountDetailsDTO) => Promise<IAccountDetails[]>
-    updateAccountDetail: (id: string, account_tier_id: string) => Promise<IAccountDetails | undefined>
+    updateAccountDetail: (accountDetailId: string, account_tier_id: string) => Promise<IAccountDetails | undefined>
+
 }
 
 export interface IAccountDetailsService {
@@ -20,4 +21,5 @@ export interface IAccountDetailsService {
     getSingleAccountDetailById: (id: string, user_id: string, account_id: string, user_role: userRole
     ) => Promise<IAccountDetails | undefined>
     createAccountDetail: (data: CreateAccountDetailsDTO, user_id: string, user_role: userRole) => Promise<IAccountDetails[]>
+    updateAccountDetail: (accountDetailId: string, data: { account_tier_id: string }) => Promise<IAccountDetails | undefined>
 }
