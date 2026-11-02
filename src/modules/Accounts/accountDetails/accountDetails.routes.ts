@@ -11,7 +11,7 @@ const repository = new AccountDetailsRepository(sql)
 const accountRepository = new AccountRepository(sql)
 const service = new AccountDetailsService(repository, accountRepository)
 const controller = new AccountDetailsController(service)
-router.get('/', adminMiddleware, controller.getAllAccountDetails).get('/:accountId/details/:accountDetailId', controller.getSingleAccountDetailById).post('/', controller.createAccountDetail)
+router.get('/', adminMiddleware, controller.getAllAccountDetails).get('/:accountId/details/:accountDetailId', controller.getSingleAccountDetailById).post('/', controller.createAccountDetail).patch("/:accountDetailId", controller.updateAccountDetail)
 
 
 export default router 
