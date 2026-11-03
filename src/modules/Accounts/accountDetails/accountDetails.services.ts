@@ -68,8 +68,6 @@ export class AccountDetailsService implements IAccountDetailsService {
         }
 
         const account = await this.accountDetailRepository.updateAccountDetail(accountDetailId, data.account_tier_id)
-
-
         return account
     }
 }
