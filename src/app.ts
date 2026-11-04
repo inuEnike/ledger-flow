@@ -22,15 +22,15 @@ app.get(`${prefix}/health-check`, (_req: Request, res: Response): void => {
         message: "API beeping and healthy"
     })
 })
-
+// public route
 app.use(`${prefix}/auth`, AuthRouter)
 
 //protected routes
 app.use(AuthMiddleware)
-
 app.use(`${prefix}/accounts`, AccountRouter)
 app.use(`${prefix}/account-details`, AccountDetailsRouter)
 
+// admin-only router
 app.use(adminMiddleware)
 app.use(`${prefix}/account-tier`, AccountTierRouter)
 
