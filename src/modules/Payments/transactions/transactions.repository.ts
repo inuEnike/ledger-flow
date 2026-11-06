@@ -151,7 +151,27 @@ export class TransactionRepository implements ITransactionRepository {
 
         return transaction ?? undefined;
     };
+    getTransactionById = async (id: string, user_id: string): Promise<ITransactions | undefined> => {
+        const [query] = await this.sql<ITransactions[]>`
+                SELECT *
+                     FROM payments.transactions
+                        WHERE id = ${id} 
+                            AND
+                                user_id = ${user_id}
+            `
+        return query
+    }
 
+    getTrasactionsByTnxReference = async (reference: string, user_id: string): Promise<ITransactions | undefined> => {
+        const [query] = await this.sql<ITransactions[]>`
+                SELECT *
+                     FROM accounts.account
+                        WHERE reference = ${reference} 
+                                AND
+                                user_id = ${user_id}
+            `
+        return query
+    }
 }
 
 
