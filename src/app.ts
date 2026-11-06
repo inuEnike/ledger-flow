@@ -5,6 +5,7 @@ import AuthRouter from "./modules/Auth/auth.routes.ts"
 import AccountRouter from "./modules/Accounts/account/accounts.routes.ts"
 import AccountTierRouter from "./modules/Accounts/accountTier/accountTier.routes.ts"
 import AccountDetailsRouter from "./modules/Accounts/accountDetails/accountDetails.routes.ts"
+import TransactionRouter from "./modules/Accounts/accountDetails/accountDetails.routes.ts"
 import cookieParser from "cookie-parser"
 import { adminMiddleware, AuthMiddleware } from "./middleware/auth.middleware.ts";
 
@@ -29,6 +30,7 @@ app.use(`${prefix}/auth`, AuthRouter)
 app.use(AuthMiddleware)
 app.use(`${prefix}/accounts`, AccountRouter)
 app.use(`${prefix}/account-details`, AccountDetailsRouter)
+app.use(`${prefix}/transactions`, TransactionRouter)
 
 // admin-only router
 app.use(adminMiddleware)

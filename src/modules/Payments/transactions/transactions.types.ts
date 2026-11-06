@@ -1,4 +1,5 @@
 import type { CurrencyCode } from "../../Accounts/account/accounts.types"
+import type { userRole } from "../../Auth/auth.types"
 
 export const Transaction_type = {
     TRANSFER: "transfer",
@@ -22,7 +23,7 @@ export interface ITransactions {
     transaction_type: TransactionType
     source_account_id: string
     destination_account_id: string
-    amount: Number
+    amount: number
     currency: CurrencyCode
     status: TransactionStatus
     description: string
@@ -34,4 +35,10 @@ export interface ITransactions {
 export interface ITransactionRepository {
     getAllTransactions: () => Promise<ITransactions | undefined>
     transferFunds: (service_account_id: string, destination_account_id: string, user_id: string, amount: number) => Promise<ITransactions | undefined>
+    getTransactionById: (id: string, user_id: string) => Promise<ITransactions | undefined>
+    getTrasactionsByTnxReference: (id: string, user_id: string) => Promise<ITransactions | undefined>
+}
+
+export interface ITransactionServices {
+    getTrasactionsByid: (id: string, account_id: string, user_id: string, user_role: userRole) => Promise<ITransactions | undefined>
 }
