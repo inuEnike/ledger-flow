@@ -41,4 +41,5 @@ export interface ITransactionRepository {
 
 export interface ITransactionServices {
     getTrasactionsByid: (id: string, account_id: string, user_id: string, user_role: userRole) => Promise<ITransactions | undefined>
+    transferFunds: (service_account_id: string, destination_account_id: string, user_id: string, amount: number, user_role: userRole) => Promise<ITransactions | undefined>
 }

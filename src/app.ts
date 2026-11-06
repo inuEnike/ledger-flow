@@ -5,7 +5,7 @@ import AuthRouter from "./modules/Auth/auth.routes.ts"
 import AccountRouter from "./modules/Accounts/account/accounts.routes.ts"
 import AccountTierRouter from "./modules/Accounts/accountTier/accountTier.routes.ts"
 import AccountDetailsRouter from "./modules/Accounts/accountDetails/accountDetails.routes.ts"
-import TransactionRouter from "./modules/Accounts/accountDetails/accountDetails.routes.ts"
+import TransactionRouter from "./modules/Payments/transactions/transactions.routes.ts"
 import cookieParser from "cookie-parser"
 import { adminMiddleware, AuthMiddleware } from "./middleware/auth.middleware.ts";
 

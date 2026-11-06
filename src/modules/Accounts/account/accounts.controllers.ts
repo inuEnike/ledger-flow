@@ -132,7 +132,6 @@ export class AccountController {
             const userId = req.user?.id
 
             const user_role = req.user?.role
-            console.log({ user_role });
 
 
             if (!userId || !user_role) {

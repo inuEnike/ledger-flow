@@ -10,6 +10,6 @@ const transactionRepository = new TransactionRepository(sql)
 const accountRepository = new AccountRepository(sql)
 const transactionService = new TrasactionService(transactionRepository, accountRepository)
 const transactionController = new TransactionController(transactionService)
-router.get("/:tnxId/transaction/:userId", transactionController.getTrasactionsByid)
+router.post("/", transactionController.transferFunds).get("/:tnxId/transaction/:userId", transactionController.getTrasactionsByid)
 
 export default router
