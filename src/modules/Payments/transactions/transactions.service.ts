@@ -33,6 +33,11 @@ export class TrasactionService implements ITransactionServices {
             throw new BAD_REQUEST_EXCEPTION("You can't transfer less than 20 naira")
         }
         const senderAccount = await this.accountRepository.getAccountByAccountId(service_account_id, user_id, user_role)
+        console.log("sender.id",senderAccount?.id );
+        console.log("sender.service acc id",service_account_id );
+        console.log(user_id);
+        
+        
         if (senderAccount?.id !== service_account_id) {
             throw new UNAUTHORIZED_EXCEPTION("Unauthorized")
         }

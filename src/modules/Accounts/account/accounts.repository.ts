@@ -10,7 +10,7 @@ export class AccountRepository implements IAccountRepository {
     }
     getAllAccounts = async (): Promise<IAccount[]> => {
         const accounts = await this.sql<IAccount[]>`
-            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.balance, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
                 FROM 
                     accounts.account as a
                         INNER JOIN auth.users as u
@@ -54,7 +54,7 @@ export class AccountRepository implements IAccountRepository {
     getUserAccounts = async (userId: string, user_role: string): Promise<IAccount[]> => {
         if (user_role === "admin") {
             const accounts = await this.sql<IAccount[]>`
-            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.balance, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
                 FROM 
                     accounts.account as a
                         INNER JOIN auth.users as u
@@ -65,7 +65,7 @@ export class AccountRepository implements IAccountRepository {
         } else {
 
             const accounts = await this.sql<IAccount[]>`
-            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.balance, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
                 FROM 
                 accounts.account as a
                     INNER JOIN auth.users as u
@@ -95,17 +95,17 @@ export class AccountRepository implements IAccountRepository {
     getAccountByAccountId = async (accountId: string, userId: string, user_role: string): Promise<IAccount | undefined> => {
         if (user_role === "admin") {
             const [account] = await this.sql<IAccount[]>`
-            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.balance, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
                 FROM 
                     accounts.account as a
                         INNER JOIN auth.users as u
                             ON a.user_id = u.id
-                                WHERE u.id = ${userId} AND a.id = ${accountId} 
+                                WHERE a.id = ${accountId} 
             `;
             return account
         } else {
             const [account] = await this.sql<IAccount[]>`
-            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
+            SELECT a.id, a.user_id, a.account_number, a.status, a.currency, a.balance, a.account_type, a.created_at, a.updated_at, u.email, u.id as user_id, u.first_name, u.last_name, u.status as user_status
                 FROM 
                     accounts.account as a
                         INNER JOIN auth.users as u

@@ -1,6 +1,7 @@
 import type { Sql } from "postgres";
 import type { ITransactionRepository, ITransactions } from "./transactions.types";
 import { BAD_REQUEST_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION } from "../../../middleware/error.middleware";
+import type { STATUS } from "../../Accounts/account/accounts.types";
 
 export class TransactionRepository implements ITransactionRepository {
     private readonly sql: Sql
@@ -171,6 +172,28 @@ export class TransactionRepository implements ITransactionRepository {
                                 user_id = ${user_id}
             `
         return query
+    }
+    getTransactionsByStatus = async (status: STATUS, userId: string, account_id: string, user_role: string): Promise<ITransactions[]> => {
+        if (user_role === "admin") {
+            const tnx = await this.sql<ITransactions[]>`
+                SELECT * 
+                    FROM payments.transactions
+                        WHERE status=${status} 
+                            AND (
+                                source_account_id = ${account_id}
+                                OR destination_account_id = ${account_id}
+                            )
+                        AND user_id = ${userId}
+            `
+            return tnx
+        }
+        const tnx = await this.sql<ITransactions[]>`
+                SELECT * 
+                    FROM payments.transactions
+                        WHERE status=${status} 
+                            AND user_id=${userId}
+                    `
+        return tnx
     }
 }
 

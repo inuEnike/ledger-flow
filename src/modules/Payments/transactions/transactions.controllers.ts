@@ -50,7 +50,7 @@ export class TransactionController {
     }
     transferFunds = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            
+
             const { service_account_id, destination_account_id, amount } =
                 transferFundsSchema.parse(req.body)
             const id = req.user?.id
@@ -60,7 +60,7 @@ export class TransactionController {
             const tnx = await this.transactionServices.transferFunds(service_account_id, destination_account_id, id as string, amount, role as userRole)
             return ApiResponse({
                 res,
-                message: "Transaction fetched successfully",
+                message: "Transaction created successfully",
                 status: 200,
                 data: tnx
             })
