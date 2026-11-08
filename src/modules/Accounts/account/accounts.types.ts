@@ -32,6 +32,7 @@ export interface IAccount {
     user_id: string
     account_number: string
     status: STATUS
+    balance: number
     currency: CurrencyCode
     deleted_at: string | null;
     created_at: string
@@ -50,6 +51,7 @@ export interface IAccountRepository {
     updateAccountByAccountId: (data: updateAccountDTO, account_id: string, user_id: string) => Promise<IAccount[]>
     updateAccountStatus: (status: STATUS, account_id: string) => Promise<IAccount | undefined>
     deleteAccountById: (accountId: string, userId: string) => Promise<IAccount[]>
+
 }
 
 export interface IAccountService {
