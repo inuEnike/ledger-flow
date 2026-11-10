@@ -28,20 +28,20 @@ export class TrasactionService implements ITransactionServices {
         return transaction
     };
 
-    transferFunds = async (service_account_id: string, destination_account_id: string, user_id: string, amount: number, user_role: userRole): Promise<ITransactions | undefined> => {
+    transferFunds = async (service_account_id: string, destination_account_id: string, user_id: string, amount: number, user_role: userRole, pin: string): Promise<ITransactions | undefined> => {
         if (!Number.isFinite(amount) || amount < 20.00) {
             throw new BAD_REQUEST_EXCEPTION("You can't transfer less than 20 naira")
         }
         const senderAccount = await this.accountRepository.getAccountByAccountId(service_account_id, user_id, user_role)
-        console.log("sender.id",senderAccount?.id );
-        console.log("sender.service acc id",service_account_id );
+        console.log("sender.id", senderAccount?.id);
+        console.log("sender.service acc id", service_account_id);
         console.log(user_id);
-        
-        
+
+
         if (senderAccount?.id !== service_account_id) {
             throw new UNAUTHORIZED_EXCEPTION("Unauthorized")
         }
-        const tnx = await this.transactionRepository.transferFunds(service_account_id, destination_account_id, user_id, amount)
+        const tnx = await this.transactionRepository.transferFunds(service_account_id, destination_account_id, user_id, amount, pin)
         if (!tnx) {
             throw new BAD_REQUEST_EXCEPTION("An error occured")
         }

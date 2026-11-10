@@ -51,13 +51,13 @@ export class TransactionController {
     transferFunds = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            const { service_account_id, destination_account_id, amount } =
+            const { service_account_id, destination_account_id, amount, pin } =
                 transferFundsSchema.parse(req.body)
             const id = req.user?.id
             const role = req.user?.role
 
 
-            const tnx = await this.transactionServices.transferFunds(service_account_id, destination_account_id, id as string, amount, role as userRole)
+            const tnx = await this.transactionServices.transferFunds(service_account_id, destination_account_id, id as string, amount, role as userRole, pin)
             return ApiResponse({
                 res,
                 message: "Transaction created successfully",

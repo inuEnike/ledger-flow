@@ -34,7 +34,7 @@ export interface ITransactions {
 
 export interface ITransactionRepository {
     getAllTransactions: () => Promise<ITransactions | undefined>
-    transferFunds: (service_account_id: string, destination_account_id: string, user_id: string, amount: number) => Promise<ITransactions | undefined>
+    transferFunds: (service_account_id: string, destination_account_id: string, user_id: string, amount: number, pin: string) => Promise<ITransactions | undefined>
     getTransactionById: (id: string, user_id: string) => Promise<ITransactions | undefined>
     getTrasactionsByTnxReference: (id: string, user_id: string) => Promise<ITransactions | undefined>
     getTransactionsByStatus: (status: STATUS, userId: string, account_id: string, user_role: string) => Promise<ITransactions[]>
@@ -42,5 +42,5 @@ export interface ITransactionRepository {
 
 export interface ITransactionServices {
     getTrasactionsByid: (id: string, account_id: string, user_id: string, user_role: userRole) => Promise<ITransactions | undefined>
-    transferFunds: (service_account_id: string, destination_account_id: string, user_id: string, amount: number, user_role: userRole) => Promise<ITransactions | undefined>
+    transferFunds: (service_account_id: string, destination_account_id: string, user_id: string, amount: number, user_role: userRole, pin: string) => Promise<ITransactions | undefined>
 }

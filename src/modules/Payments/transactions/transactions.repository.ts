@@ -1,6 +1,6 @@
 import type { Sql } from "postgres";
 import type { ITransactionRepository, ITransactions } from "./transactions.types";
-import { BAD_REQUEST_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION } from "../../../middleware/error.middleware";
+import { BAD_REQUEST_EXCEPTION, NOT_FOUND_EXCEPTION, UNAUTHORIZED_EXCEPTION, VALIDATION_EXCEPTION } from "../../../middleware/error.middleware";
 import type { STATUS } from "../../Accounts/account/accounts.types";
 
 export class TransactionRepository implements ITransactionRepository {
@@ -20,7 +20,8 @@ export class TransactionRepository implements ITransactionRepository {
         service_account_id: string,
         destination_account_id: string,
         user_id: string,
-        amount: number
+        amount: number,
+        pin: string
     ): Promise<ITransactions | undefined> => {
 
         // 1. Basic validation
@@ -54,7 +55,6 @@ export class TransactionRepository implements ITransactionRepository {
             const sender = accounts.find(
                 account => account.id === service_account_id
             );
-
             const receiver = accounts.find(
                 account => account.id === destination_account_id
             );
@@ -65,6 +65,9 @@ export class TransactionRepository implements ITransactionRepository {
 
             if (!receiver) {
                 throw new NOT_FOUND_EXCEPTION("Recipient account not found");
+            }
+            if (sender.pin !== pin) {
+                throw new VALIDATION_EXCEPTION("Incorrect Pin")
             }
 
             // 5. Verify sender ownership
